@@ -1,4 +1,4 @@
-# 🇿🇦 JSE Stock Analysis & Backtesting System
+# JSE Stock Analysis & Backtesting System
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
 ![Exchange](https://img.shields.io/badge/Exchange-JSE-green)
@@ -8,7 +8,7 @@
 
 A production-grade, multi-dimensional quantitative investment and research platform tailored for the **Johannesburg Stock Exchange (JSE)**.
 
-This platform aggregates 5-year historical pricing datasets (Yahoo Finance) and real-time screener metrics (TradingView exports) to scan, filter, rank, and backtest sophisticated investment strategies. It incorporates fundamental analysis, technical indicators, seasonality tracking, PDF annual report sentiment analysis, and safety-gated screener engines.
+This platform aggregates 5-year historical pricing datasets and real-time screener metrics to scan, filter, rank, and backtest sophisticated investment strategies. It incorporates fundamental analysis, technical indicators, seasonality tracking, PDF annual report sentiment analysis, and safety-gated screener engines.
 
 ---
 
