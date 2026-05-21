@@ -1,6 +1,12 @@
 # 🇿🇦 JSE Stock Analysis & Backtesting System
 
-A production-grade, multi-dimensional quantitative investment and research platform tailored for the **Johannesburg Stock Exchange (JSE)**. 
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
+![Exchange](https://img.shields.io/badge/Exchange-JSE-green)
+![Data](https://img.shields.io/badge/Data-Yahoo%20Finance%20%2B%20TradingView-orange)
+![Stocks](https://img.shields.io/badge/Stocks%20Covered-245%2B-purple)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+A production-grade, multi-dimensional quantitative investment and research platform tailored for the **Johannesburg Stock Exchange (JSE)**.
 
 This platform aggregates 5-year historical pricing datasets (Yahoo Finance) and real-time screener metrics (TradingView exports) to scan, filter, rank, and backtest sophisticated investment strategies. It incorporates fundamental analysis, technical indicators, seasonality tracking, PDF annual report sentiment analysis, and safety-gated screener engines.
 
@@ -8,33 +14,30 @@ This platform aggregates 5-year historical pricing datasets (Yahoo Finance) and 
 
 ## 📊 System Architecture & Data Flow
 
-Below is the workflow showing how data flows from external ingestion through our quantitative engine to generate actionable portfolios and backtesting reports.
-
 ```mermaid
 graph TD
     A1[TradingView Screener CSVs] -->|Place in data/| B1(create_snapshot.py)
-    A2[Yahoo Finance Parquet Files] -->|Cached in data/historical/| B2(run_analysis.py & combined_decision.py)
+    A2[Yahoo Finance via yfinance] -->|download_historical.py| B2(data/historical/ parquet files)
     A3[PDF Annual Reports & News] -->|ingest/| B3(news_scraper.py & fetch_reports.py)
-    
+
+    B2 -->|Technicals & Risk| D1{Quantitative Engine}
     B1 -->|Merge & Clean| C1[(data/snapshots/YYYY-MM-DD/)]
-    
-    C1 -->|Fundamentals| D1{Quantitative Engine}
-    B2 -->|Technicals & Risk| D1
+    C1 -->|Fundamentals| D1
     B3 -->|Sentiment & Report Tone| D1
-    
+
     D1 --> E1(combined_decision.py)
     D1 --> E2(analysis/hidden_gems.py)
     D1 --> E3(analysis/bluechip_quality.py)
     D1 --> E4(analysis/seasonality.py)
-    
-    E1 -->|Scoring: 50% Fund / 30% Tech / 20% Risk| F1[Actionable Buy List & CSV]
+
+    E1 -->|50% Fund / 30% Tech / 20% Risk| F1[Actionable Buy List & CSV]
     E2 -->|Safety Gates & Trap Filters| F2[Hidden Gems & Value Turnarounds]
     E3 -->|Dynamic P/E Cap vs ROE| F3[Blue-Chip Quality Elite & Premium]
     E4 -->|Win-Rate & Z-Scores| F4[Monthly Seasonality Heatmaps]
-    
+
     B2 --> D2{Backtest Engine}
     D2 -->|Momentum Top-10 vs BH Top-20| G1[Backtest League Tables & CSVs]
-    
+
     F1 & F2 & F3 & F4 & G1 --> H1[Interactive Jupyter Notebooks]
 ```
 
@@ -43,154 +46,213 @@ graph TD
 ## 🛠️ Core Capabilities & Investment Screens
 
 ### 1. JSE Combined Decision System (`combined_decision.py`)
-Merges fundamental growth metrics with technical indicators and historical risk data to synthesize a single unified score for all liquid stocks.
-* **Scoring Weights:** 
-  * 📈 **50% Fundamentals:** EPS growth, Return on Equity (ROE), Net Profit Margin, Revenue Growth, Debt-to-Equity, and Current Ratio.
-  * 📉 **30% Technicals:** Trend (above SMA50 & SMA200), 12-month momentum, RSI sweet-spot (40-60), and MACD crossovers.
-  * 🛡️ **20% Risk:** Annual Sharpe ratio, Maximum Drawdown (1-year), and Annualized Volatility.
-* **Liquidity Gate:** Excludes stocks trading less than **R1,000,000/day** average daily value to ensure easy entry and exit.
-* **Outputs:** Generates an **Actionable Buy List** (Top 25) and an **Avoid List** (Bottom 10).
+Merges fundamental growth metrics with technical indicators and historical risk data to synthesize a single unified score for all liquid JSE stocks.
 
-### 2. Hidden Gems & Value Turnarounds (`analysis/hidden_gems.py`)
-Finds fundamentally excellent companies that are currently out-of-favor or ignored by the market (the *"beaten-down ready to run"* opportunities).
-* **Hardened Against Value Traps (v2.0):** Automatically flags accounting anomalies (e.g., massive paper margins diverging from deeply negative Free Cash Flow margins; shell company flags with <50 employees but multi-billion market caps; and extreme EPS spikes unsupported by revenues).
-* **v2.1 Safety Gates:**
-  * **Valuation Cap:** Blocks paying $>20\text{x}$ earnings for a "hidden gem" to avoid overpaying.
-  * **Liquidity Floor:** Enforces a strict minimum of **R10,000,000/day** volume.
-  * **Falling-Knife Guard:** Excludes any stock down more than **30% in the last 3 months** (relabeling cold trends to *"Falling — verify"*).
-* **Value Turnarounds:** Flags profitable, historically robust businesses pulling back into attractive discount zones.
+| Component | Weight | Metrics |
+|---|---|---|
+| 📈 Fundamentals | 50% | EPS growth, ROE, Net Margin, Revenue Growth, Debt/Equity, Current Ratio |
+| 📉 Technicals | 30% | SMA50/200 trend, 12-month momentum, RSI (40–60 sweet-spot), MACD crossovers |
+| 🛡️ Risk | 20% | Annual Sharpe ratio, Max Drawdown (1-year), Annualized Volatility |
 
-### 3. Blue-Chip Quality Screener (`analysis/bluechip_quality.py`)
-Designed to catch premium, compounding market leaders (e.g., Standard Bank, Naspers, Shoprite, MTN) that are rarely "cold" or "hidden" but represent high-quality shareholder value.
-* **Dynamic P/E Cap:** High-ROE, high-growth businesses deserve premium multiples. The screener uses a dynamic P/E cap:
-  $$\text{P/E Cap} = 15.0 + \text{ROE Bonus (up to +5x)} + \text{EPS Growth Bonus (up to +5x)} \quad (\text{Max } 35\text{x})$$
-* **Timing Signals:** Recommends entry timing based on RSI indicators (e.g., *Oversold — Buy*, *Accumulate*, *Wait — Overbought*).
-
-### 4. Seasonality Analyzer (`analysis/seasonality.py`)
-Processes historical monthly returns over the last 5+ years to detect recurring, calendar-based performance trends.
-* **Z-Scored Magnitude:** Calculates z-scores of average returns for each month relative to the stock's cross-sectional history.
-* **Consistency Check:** Measures win-rate consistency (months with positive returns).
-* **Warnings:** Issues a warning flag if a stock is entered during a historically weak calendar month.
-
-### 5. News & Annual Report Sentiment Ingestion (`ingest/`)
-Examines unstructured text data to identify corporate sentiment trends.
-* **PDF Parser & Text Extractor (`fetch_reports.py`):** Downloads and parses annual report PDFs.
-* **Report Analyzer (`analysis/report_analyzer.py`):** Scores report tone (optimistic vs. pessimistic).
-* **Sentiment Integration:** Tone scores apply a bonus/penalty (up to **$\pm 5$ points**) directly to the Growth Score.
-
-### 6. Momentum Strategy Backtester (`run_analysis.py`)
-Vectorized backtesting system evaluating a classic dual-momentum trading strategy on JSE historical data.
-* **Strategy:** Every 3 months (quarterly), the portfolio selects the **Top 10** liquid stocks by 12-1 month momentum (12-month return excluding the most recent month).
-* **Execution:** Equal-weighted, incorporating transaction costs (0.5%), a liquidity filter, and comparison against an **Equal-Weighted Buy-and-Hold Top 20** benchmark proxy.
+- **Liquidity Gate:** Excludes stocks trading less than **R1,000,000/day** to ensure meaningful entry and exit.
+- **Outputs:** Actionable Buy List (Top 25), Avoid List (Bottom 10), and a deep-dive into the top 5 picks.
 
 ---
 
-## 📂 Project Directory Structure
+### 2. Hidden Gems & Value Turnarounds (`analysis/hidden_gems.py`)
+Finds fundamentally excellent companies that are currently out-of-favor or ignored by the market — the *"beaten-down ready to run"* opportunity set.
 
-```lis
+**Value Trap Filters (v2.0)** automatically block accounting anomalies:
+- Net margin > 30% but Free Cash Flow margin deeply negative (paper earnings, not real cash)
+- Finance-sector stocks with net margins above 70% (almost always one-time events)
+- EPS spikes > 500% with no revenue support (one-time non-recurring gains)
+- Profitable companies with zero dividend payout and poor ROE (management doesn't trust its own earnings)
+- Shell company flags: < 50 employees with > R10B market cap
+
+**v2.1 Safety Gates:**
+- **Valuation Cap:** Blocks paying more than 20x earnings for a "hidden gem" (NaN P/E is allowed through for early-stage profitable companies)
+- **Liquidity Floor:** Enforces a minimum of **R10,000,000/day** volume
+- **Falling-Knife Guard:** Excludes any stock down more than **30% in 3 months** — labels cold trend as *"Falling — verify before buying"*
+
+**Value Turnarounds:** Separately surfaces profitable, historically robust businesses pulling back into discount zones, with the same safety gates applied.
+
+---
+
+### 3. Blue-Chip Quality Screener (`analysis/bluechip_quality.py`)
+Designed to catch premium, compounding market leaders (e.g., Standard Bank, Naspers, Shoprite, MTN) — stocks that are rarely "hidden" but represent outstanding quality.
+
+Unlike Hidden Gems, **no negative momentum requirement** is imposed. The dynamic P/E cap adapts to quality:
+
+```
+P/E Cap = 15.0
+         + ROE Bonus: +1x for every 5% ROE above 15%  (max +5x)
+         + EPS Growth Bonus: +1x for every 20% EPS above 20%  (max +5x)
+         [Hard ceiling: 35x]
+```
+
+This means a high-ROE, fast-growing business (like Capitec or Discovery) is allowed a higher valuation than a mediocre compounder, reflecting the economic reality that quality earns premium multiples.
+
+**Entry Timing Signals:** Based on RSI — *Oversold — Buy*, *Buy Zone*, *Accumulate*, *Cautious*, or *Wait — Overbought*.
+
+**Tier Classification:** Stocks are labelled 🏆 Elite (score ≥ 70), ⭐ Premium (≥ 55), ✅ Quality (≥ 40), or 📊 Watchlist.
+
+---
+
+### 4. Seasonality Analyzer (`analysis/seasonality.py`)
+Processes 5+ years of historical monthly returns to detect recurring, calendar-based performance patterns.
+
+- **Z-Scored Magnitude:** For each month, computes a z-score of that month's average return against the stock's own historical cross-section.
+- **Win-Rate Consistency:** Measures how often (%) a month has historically delivered a positive return.
+- **Composite Score:** `0.7 × z-scored magnitude + 0.3 × win-rate consistency` → squashed to [-1, +1].
+- **Warnings:** Issues a seasonal warning flag when a stock is entered during a historically weak calendar month.
+- **Universe Matrix:** Builds a full (ticker × month) heatmap for all 245+ JSE stocks.
+
+---
+
+### 5. News & Annual Report Sentiment (`ingest/` + `analysis/report_analyzer.py`)
+Examines unstructured text data to surface corporate sentiment signals.
+
+- **PDF Parser (`fetch_annual_reports.py`):** Downloads and extracts text from annual report PDFs.
+- **Report Analyzer (`report_analyzer.py`):** Scores report tone from pessimistic to optimistic.
+- **Sentiment Integration:** The tone score applies a bonus or penalty of **up to ±5 points** directly to the overall Growth Score — a positive CEO letter nudges the stock up, a warning-heavy report nudges it down.
+
+---
+
+### 6. Momentum Strategy Backtester (`run_analysis.py`)
+Vectorized backtesting system evaluating a cross-sectional momentum strategy on JSE historical data.
+
+- **Strategy:** Quarterly rebalancing — every 3 months, select the **Top 10** liquid stocks ranked by 12-1 month momentum (full-year return excluding the most recent month, to avoid short-term reversal effects).
+- **Equal-weighted portfolio** with 0.5% transaction cost per trade.
+- **Liquidity filter:** Minimum R5M/day daily traded value — avoids illiquid micro-caps that look good on paper but can't be traded at scale.
+- **Benchmark:** Equal-weighted Buy-and-Hold of the Top 20 stocks by price × average volume (JSE large-cap proxy).
+- **Output metrics:** Total return, annualized return, volatility, Sharpe ratio, max drawdown, alpha vs. benchmark.
+
+---
+
+## 📂 Project Structure
+
+```text
 South_African_Stocks/
-├── config/                 # Configuration & settings
-│   ├── settings.py         # Sector outlooks, scoring weights, list of JSE tickers
-│   └── __init__.py
-├── core/                   # Core data models and file loaders
-│   ├── data_loader.py      # Historical parquet loader & return computation
-│   ├── models.py           # Structuring fundamental, technical, & growth dataclasses
-│   └── __init__.py
-├── analysis/               # Primary quantitative modules
-│   ├── growth.py           # Combined GrowthAnalyzer (Fundamentals + Technicals + Sentiment)
-│   ├── hidden_gems.py      # Hidden Gems screener (with value trap & falling-knife guards)
-│   ├── bluechip_quality.py # Quality screener (with dynamic P/E multiple caps)
-│   ├── seasonality.py      # Z-scored monthly returns & consistency analyzer
-│   ├── report_analyzer.py  # Annual reports sentiment & tone scorer
-│   ├── technical.py        # Technical indicator formulas (RSI, SMA, EMA, MACD, BB)
-│   ├── fundamental.py      # Fundamental metrics loader & scorer
-│   ├── sentiment.py        # Sentiment analysis on news feeds
-│   ├── snapshot_store.py   # Snapshot directory manager (Parquet & CSV backups)
-│   ├── snapshot_ranker.py  # Snapshot ranking compiler
-│   ├── snapshot_tracker.py # Historical snapshot performance tracer
-│   ├── predictor_2026.py   # Future year projections & sector tailwind matrices
-│   ├── backtest.py         # Vectorized backtesting classes
-│   └── __init__.py
-├── ingest/                 # Scrapers and report collectors
-│   ├── news_scraper.py     # RSS finance news scraping
-│   ├── fetch_reports.py    # General financial reports scraper
-│   ├── fetch_annual_reports.py # Automated PDF downloader for JSE stocks
-│   └── __init__.py
-├── utils/                  # Ingestion helper libraries
-│   ├── tradingview_importer.py  # Standardizes TradingView CSV columns
-│   ├── tradingview_snapshot.py  # Merges multiple JSE TradingView CSV exports
-│   └── visualization.py    # Returns and backtest plotting utilities
-├── notebooks/              # Jupyter Research & Visualization Notebooks
-│   ├── analysis_notebook.ipynb  # Main market dashboard & technical screenings
+├── config/                      # Configuration & settings
+│   └── settings.py              # Sector outlooks, scoring weights, all JSE tickers
+├── core/                        # Core data models and loaders
+│   ├── data_loader.py           # Historical parquet loader & return computation
+│   └── models.py                # Dataclasses: FundamentalMetrics, TechnicalMetrics, GrowthScore
+├── analysis/                    # Primary quantitative modules
+│   ├── growth.py                # GrowthAnalyzer: Fundamentals + Technicals + Seasonality + Sentiment
+│   ├── hidden_gems.py           # Hidden Gems screener (value trap & falling-knife guards v2.1)
+│   ├── bluechip_quality.py      # Quality screener (dynamic P/E cap, tier classification)
+│   ├── seasonality.py           # Z-scored monthly returns & win-rate consistency analyzer
+│   ├── report_analyzer.py       # Annual report tone & sentiment scorer
+│   ├── technical.py             # RSI, SMA, EMA, MACD, Bollinger Bands
+│   ├── fundamental.py           # Fundamental metric loader & scorer
+│   ├── sentiment.py             # News feed sentiment analysis
+│   ├── snapshot_store.py        # Snapshot directory manager (Parquet & CSV)
+│   ├── snapshot_ranker.py       # Snapshot ranking compiler
+│   ├── snapshot_tracker.py      # Historical snapshot performance tracer
+│   ├── predictor_2026.py        # Forward projections & sector tailwind matrices
+│   └── backtest.py              # Vectorized backtesting classes
+├── ingest/                      # Data scrapers and collectors
+│   ├── news_scraper.py          # RSS finance news scraper
+│   ├── fetch_reports.py         # General financial reports scraper
+│   └── fetch_annual_reports.py  # Automated PDF downloader for JSE annual reports
+├── utils/                       # Utility libraries
+│   ├── tradingview_importer.py  # Normalizes TradingView CSV column names
+│   ├── tradingview_snapshot.py  # Merges multiple TradingView CSV exports
+│   └── visualization.py        # Return & backtest plotting helpers
+├── notebooks/                   # Jupyter research notebooks
+│   ├── analysis_notebook.ipynb  # Market dashboard & technical screenings
 │   ├── bluechip_quality.ipynb   # Compounding leader visual screener
 │   ├── hidden_gems.ipynb        # Contrarian value plays research
 │   ├── decision_system.ipynb    # Actionable JSE Buy List compiler
-│   └── nb_helpers.py            # Plotting and formatting helper functions
-├── data/                   # System database (ignored by Git if empty/temporary)
-│   ├── historical/         # 5-year historical pricing parquet datasets for 245+ stocks
-│   ├── snapshots/          # Compiled combined fundamental/technical snapshots
-│   ├── reports/            # Cached annual report PDFs and raw text
-│   └── news/               # Cached corporate news feeds
-├── outputs/                # Ranked CSV lists, backtest performance datasets
-├── requirements.txt        # System library requirements & package list
-├── run_analysis.py         # Command-line backtester & technical metrics generator
-├── combined_decision.py    # Command-line actionable buy/avoid list synthesizer
-└── create_snapshot.py      # Interactive TradingView exports aggregator
+│   └── nb_helpers.py            # Shared plotting & formatting functions
+├── data/
+│   ├── historical/              # 5-year parquet price files for 245+ JSE stocks
+│   ├── snapshots/               # Combined fundamental/technical snapshots by date
+│   ├── reports/                 # Cached annual report JSON extracts
+│   └── news/                    # Cached corporate news feed JSON
+├── outputs/                     # Analysis output CSVs and backtest results
+├── requirements.txt
+├── download_historical.py       # Download price history for a single stock via yfinance
+├── download_bulk_historical.py  # Bulk-download price history for all 245+ stocks
+├── create_snapshot.py           # Merge TradingView CSVs into a unified snapshot
+├── run_analysis.py              # Full technical analysis + momentum backtest runner
+└── combined_decision.py         # Combined fundamental + technical + risk decision engine
 ```
 
 ---
 
-## ⚡ Setup & Quick-Start Execution Guide
+## ⚡ Setup & Quick-Start Guide
 
-### 1. Clone the repository and install requirements
-Ensure you have Python 3.9+ installed, then run:
+### 1. Install requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Update Screener Data (Aggregating Snapshots)
-If you have new CSV exports from the TradingView JSE screener:
-1. Place the CSV export files in the `data/` folder.
-2. Run the interactive snapshot creator:
-   ```bash
-   python create_snapshot.py
-   ```
-3. Confirm the discovered CSV files. The script will automatically merge them, resolve data conflicts, and save a unified snapshot (Parquet & CSV) in `data/snapshots/YYYY-MM-DD/`.
+### 2. Download historical price data
+> **This must be done before running any analysis.** Historical parquet files power the technical indicators and backtesting engine.
 
-### 3. Generate the Actionable Buy List
-To run the combined quantitative engine and calculate the final JSE Buy/Avoid rankings, run:
+To download 5-year price history for all 245+ JSE stocks at once:
+```bash
+python download_bulk_historical.py
+```
+Files are saved as `data/historical/<TICKER>.parquet`.
+
+### 3. Build a TradingView snapshot
+Export your JSE screener data from TradingView as CSV files, place them in `data/`, then run:
+```bash
+python create_snapshot.py
+```
+The script discovers CSVs, merges them, resolves duplicate columns, and saves a unified snapshot to `data/snapshots/YYYY-MM-DD/`.
+
+### 4. Generate the Actionable Buy List
 ```bash
 python combined_decision.py
 ```
-This processes the latest fundamentals snapshot and matches it with 5-year historical calculations to output:
-* **The Actionable Buy List (Top 25 Liquid Stocks)**
-* **The Avoid List (Bottom 10 Liquid Stocks)**
-* A deep dive into the top 5 picks, detailing EPS growth, ROE, margins, trend alignment, Sharpe ratios, and drawdowns.
-* Saved CSV results in `outputs/combined_decision_ranked.csv`.
+Produces the Top 25 Liquid Stocks (Buy) and Bottom 10 (Avoid), with a detailed breakdown of scores for the top 5 picks. Output saved to `outputs/combined_decision_ranked.csv`.
 
-### 4. Run Backtesting & Full Technical Leagues
-To run a comprehensive technical analysis on all 245 JSE stocks and backtest the Momentum Strategy (Top-10 quarterly rebalanced) vs. Buy-and-Hold, run:
+### 5. Run Full Technical Analysis & Backtest
 ```bash
 python run_analysis.py
 ```
-This outputs:
-* Full signal distributions (BUY, HOLD, SELL ratios).
-* Top 20 and Bottom 10 technical score tables.
-* A strategy comparison dashboard comparing annualized returns, volatilities, Sharpe ratios, maximum drawdowns, and transaction cost impacts.
-* Saved CSV outputs in `outputs/` for graphing.
+Outputs:
+- Signal distributions (BUY / HOLD / SELL counts across all stocks)
+- Top 20 and Bottom 10 technical score league tables
+- Momentum strategy vs. Buy-and-Hold benchmark comparison (annualized return, Sharpe, max drawdown, alpha)
+- Saved CSVs in `outputs/` for charting in the notebooks
 
-### 5. Interactive Notebook Analysis
-Launch Jupyter Notebook to inspect the graphical dashboards:
+### 6. Interactive Notebook Analysis
 ```bash
 jupyter notebook
 ```
-Open these premium research workbooks:
-* **`notebooks/decision_system.ipynb`**: Interactive dashboard compiling and customizing the JSE Buy List.
-* **`notebooks/hidden_gems.ipynb`**: Deep dive into undervalued turnaround plays with visual safety-gate filters.
-* **`notebooks/bluechip_quality.ipynb`**: Elite compounding stock screener with dynamic valuation caps.
-* **`notebooks/analysis_notebook.ipynb`**: General market review, technical grids, and seasonality return heatmaps.
+| Notebook | Purpose |
+|---|---|
+| `decision_system.ipynb` | Interactive JSE Buy List compiler with filters |
+| `hidden_gems.ipynb` | Contrarian value plays with safety-gate visualization |
+| `bluechip_quality.ipynb` | Elite compounding stock screener |
+| `analysis_notebook.ipynb` | Market overview, technical grids, seasonality heatmaps |
+
+---
+
+## 📖 Key Metrics Glossary
+
+| Metric | Description |
+|---|---|
+| **ROE** | Return on Equity — how much profit a company generates per rand of shareholder equity |
+| **EPS Growth** | Earnings Per Share growth — year-on-year change in per-share profitability |
+| **FCF Margin** | Free Cash Flow Margin — how much of revenue becomes real cash after capex |
+| **RSI (14)** | Relative Strength Index — momentum oscillator; below 30 = oversold, above 70 = overbought |
+| **SMA 50/200** | Simple Moving Averages; price above SMA200 signals a long-term uptrend |
+| **Golden Cross** | SMA50 crossing above SMA200 — classic bullish trend confirmation |
+| **Sharpe Ratio** | Risk-adjusted return (excess return ÷ volatility); > 1.0 is good, > 2.0 is excellent |
+| **Sortino Ratio** | Like Sharpe but only penalises downside volatility |
+| **Max Drawdown** | Largest peak-to-trough decline in a period — measures worst-case loss |
+| **MACD** | Moving Average Convergence Divergence — momentum & trend direction indicator |
+| **P/E Ratio** | Price-to-Earnings — how many rands you pay per rand of annual earnings |
+| **12-1 Month Momentum** | 12-month price return excluding the last month (standard cross-sectional momentum signal) |
 
 ---
 
 ## 🛡️ Disclaimer
-This analysis system is designed purely for quantitative research and informational purposes. Past performance does not guarantee future results. Stock trading and investing on the Johannesburg Stock Exchange (JSE) carry substantial risk, and you should always conduct independent research or consult a registered financial advisor before making investment decisions.
+
+This system is designed for quantitative research and informational purposes only. Past performance does not guarantee future results. Trading and investing on the Johannesburg Stock Exchange (JSE) carry substantial financial risk. Always conduct independent due diligence or consult a registered financial advisor before making investment decisions.
