@@ -1,0 +1,91 @@
+{
+  "source_files": [
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (1).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (10).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (2).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (3).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (4).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (5).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (6).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (7).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (8).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15 (9).csv",
+    "c:\\Users\\chris\\Downloads\\NG_Stocks_2026-05-15.csv"
+  ],
+  "total_symbols": 140,
+  "columns_merged": 145,
+  "duplicate_columns_resolved": 37,
+  "conflicts_count": 11,
+  "dropped_columns": [
+    "_analyst_rating",
+    "price_-_currency",
+    "net_income_annual_-_currency",
+    "earnings_per_share_diluted_trailing_12_months_-_currency",
+    "ebitda_trailing_12_months_-_currency",
+    "earnings_per_share_estimate_annual_-_currency",
+    "total_current_liabilities_annual_-_currency",
+    "total_current_liabilities_quarterly_-_currency",
+    "pre-market_price_-_currency",
+    "post-market_price_-_currency",
+    "dividends_per_share_annual_-_currency",
+    "dividends_per_share_quarterly_-_currency",
+    "total_revenue_trailing_12_months_-_currency",
+    "gross_profit_trailing_12_months_-_currency",
+    "operating_income_trailing_12_months_-_currency",
+    "net_income_trailing_12_months_-_currency",
+    "total_assets_quarterly_-_currency",
+    "total_current_assets_quarterly_-_currency",
+    "cash_and_short-term_investments_quarterly_-_currency",
+    "total_liabilities_quarterly_-_currency",
+    "total_debt_quarterly_-_currency",
+    "net_debt_quarterly_-_currency",
+    "total_equity_quarterly_-_currency",
+    "cash_flow_from_operating_activities_trailing_12_months_-_currency",
+    "cash_flow_from_investing_activities_trailing_12_months_-_currency",
+    "cash_flow_from_financing_activities_trailing_12_months_-_currency",
+    "free_cash_flow_trailing_12_months_-_currency",
+    "capital_expenditures_trailing_12_months_-_currency",
+    "revenue_per_share_trailing_12_months_-_currency",
+    "basic_earnings_per_share_trailing_12_months_-_currency",
+    "operating_cash_flow_per_share_trailing_12_months_-_currency",
+    "free_cash_flow_per_share_trailing_12_months_-_currency",
+    "ebit_per_share_trailing_12_months_-_currency",
+    "ebitda_per_share_trailing_12_months_-_currency",
+    "book_value_per_share_quarterly_-_currency",
+    "total_debt_per_share_quarterly_-_currency",
+    "cash_per_share_quarterly_-_currency",
+    "market_capitalization_-_currency"
+  ],
+  "symbols_missing_in_later_files": {},
+  "config": {
+    "aggressive": {
+      "momentum_weight": 0.35,
+      "fundamental_growth_weight": 0.3,
+      "quality_weight": 0.15,
+      "risk_penalty_weight": 0.1,
+      "coverage_penalty_weight": 0.1
+    },
+    "guardrails": {
+      "momentum_weight": 0.25,
+      "fundamental_growth_weight": 0.25,
+      "quality_weight": 0.25,
+      "risk_penalty_weight": 0.15,
+      "coverage_penalty_weight": 0.1
+    },
+    "gates": {
+      "min_coverage_aggressive": 0.5,
+      "min_liquidity_value_1d_aggressive": 1000000,
+      "min_coverage_guardrails": 0.6,
+      "min_liquidity_value_1d_guardrails": 10000000,
+      "max_debt_to_equity_guardrails": 2.0,
+      "require_positive_net_margin_guardrails": false
+    },
+    "sector_min_size_for_sector_ranks": 5,
+    "winsor_percentiles": [
+      1,
+      99
+    ]
+  },
+  "saved_at": "2026-05-15T15:38:09.517427",
+  "snapshot_date": "2026-05-15"
+}
