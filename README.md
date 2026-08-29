@@ -81,7 +81,7 @@ Merges fundamental growth metrics with technical indicators and historical risk 
 ---
 
 ### 2. Hidden Gems & Value Turnarounds (`analysis/hidden_gems.py`)
-Finds fundamentally excellent companies that are currently out-of-favor or ignored by the market — the *"beaten-down ready to run"* opportunity set.
+Finds fundamentally excellent companies that are currently out-of-favor or ignored by the market: the *"beaten-down ready to run"* opportunity set.
 
 **Value Trap Filters (v2.0)** automatically block accounting anomalies:
 - Net margin > 30% but Free Cash Flow margin deeply negative (paper earnings, not real cash)
@@ -93,14 +93,14 @@ Finds fundamentally excellent companies that are currently out-of-favor or ignor
 **v2.1 Safety Gates:**
 - **Valuation Cap:** Blocks paying more than 20x earnings for a "hidden gem" (NaN P/E is allowed through for early-stage profitable companies)
 - **Liquidity Floor:** Enforces a minimum of **R10,000,000/day** volume
-- **Falling-Knife Guard:** Excludes any stock down more than **30% in 3 months** — labels cold trend as *"Falling — verify before buying"*
+- **Falling-Knife Guard:** Excludes any stock down more than **30% in 3 months**, labelling the cold trend as *"Falling, verify before buying"*
 
 **Value Turnarounds:** Separately surfaces profitable, historically robust businesses pulling back into discount zones, with the same safety gates applied.
 
 ---
 
 ### 3. Blue-Chip Quality Screener (`analysis/bluechip_quality.py`)
-Designed to catch premium, compounding market leaders (e.g., Standard Bank, Naspers, Shoprite, MTN) — stocks that are rarely "hidden" but represent outstanding quality.
+Designed to catch premium, compounding market leaders (e.g., Standard Bank, Naspers, Shoprite, MTN), stocks that are rarely "hidden" but represent outstanding quality.
 
 Unlike Hidden Gems, **no negative momentum requirement** is imposed. The dynamic P/E cap adapts to quality:
 
@@ -113,7 +113,7 @@ P/E Cap = 15.0
 
 This means a high-ROE, fast-growing business (like Capitec or Discovery) is allowed a higher valuation than a mediocre compounder, reflecting the economic reality that quality earns premium multiples.
 
-**Entry Timing Signals:** Based on RSI — *Oversold — Buy*, *Buy Zone*, *Accumulate*, *Cautious*, or *Wait — Overbought*.
+**Entry Timing Signals:** Based on RSI: *Oversold (Buy)*, *Buy Zone*, *Accumulate*, *Cautious*, or *Wait (Overbought)*.
 
 **Tier Classification:** Stocks are labelled 🏆 Elite (score ≥ 70), ⭐ Premium (≥ 55), ✅ Quality (≥ 40), or 📊 Watchlist.
 
@@ -135,16 +135,16 @@ Examines unstructured text data to surface corporate sentiment signals.
 
 - **PDF Parser (`fetch_annual_reports.py`):** Downloads and extracts text from annual report PDFs.
 - **Report Analyzer (`report_analyzer.py`):** Scores report tone from pessimistic to optimistic.
-- **Sentiment Integration:** The tone score applies a bonus or penalty of **up to ±5 points** directly to the overall Growth Score — a positive CEO letter nudges the stock up, a warning-heavy report nudges it down.
+- **Sentiment Integration:** The tone score applies a bonus or penalty of **up to ±5 points** directly to the overall Growth Score. A positive CEO letter nudges the stock up, a warning-heavy report nudges it down.
 
 ---
 
 ### 6. Momentum Strategy Backtester (`run_analysis.py`)
 Vectorized backtesting system evaluating a cross-sectional momentum strategy on JSE historical data.
 
-- **Strategy:** Quarterly rebalancing — every 3 months, select the **Top 10** liquid stocks ranked by 12-1 month momentum (full-year return excluding the most recent month, to avoid short-term reversal effects).
+- **Strategy:** Quarterly rebalancing. Every 3 months, select the **Top 10** liquid stocks ranked by 12-1 month momentum (full-year return excluding the most recent month, to avoid short-term reversal effects).
 - **Equal-weighted portfolio** with 0.5% transaction cost per trade.
-- **Liquidity filter:** Minimum R5M/day daily traded value — avoids illiquid micro-caps that look good on paper but can't be traded at scale.
+- **Liquidity filter:** Minimum R5M/day daily traded value, which avoids illiquid micro-caps that look good on paper but can't be traded at scale.
 - **Benchmark:** Equal-weighted Buy-and-Hold of the Top 20 stocks by price × average volume (JSE large-cap proxy).
 - **Output metrics:** Total return, annualized return, volatility, Sharpe ratio, max drawdown, alpha vs. benchmark.
 
@@ -259,17 +259,17 @@ jupyter notebook
 
 | Metric | Description |
 |---|---|
-| **ROE** | Return on Equity — how much profit a company generates per rand of shareholder equity |
-| **EPS Growth** | Earnings Per Share growth — year-on-year change in per-share profitability |
-| **FCF Margin** | Free Cash Flow Margin — how much of revenue becomes real cash after capex |
-| **RSI (14)** | Relative Strength Index — momentum oscillator; below 30 = oversold, above 70 = overbought |
+| **ROE** | Return on Equity. How much profit a company generates per rand of shareholder equity |
+| **EPS Growth** | Earnings Per Share growth, the year-on-year change in per-share profitability |
+| **FCF Margin** | Free Cash Flow Margin. How much of revenue becomes real cash after capex |
+| **RSI (14)** | Relative Strength Index, a momentum oscillator; below 30 = oversold, above 70 = overbought |
 | **SMA 50/200** | Simple Moving Averages; price above SMA200 signals a long-term uptrend |
-| **Golden Cross** | SMA50 crossing above SMA200 — classic bullish trend confirmation |
+| **Golden Cross** | SMA50 crossing above SMA200, the classic bullish trend confirmation |
 | **Sharpe Ratio** | Risk-adjusted return (excess return ÷ volatility); > 1.0 is good, > 2.0 is excellent |
 | **Sortino Ratio** | Like Sharpe but only penalises downside volatility |
-| **Max Drawdown** | Largest peak-to-trough decline in a period — measures worst-case loss |
-| **MACD** | Moving Average Convergence Divergence — momentum & trend direction indicator |
-| **P/E Ratio** | Price-to-Earnings — how many rands you pay per rand of annual earnings |
+| **Max Drawdown** | Largest peak-to-trough decline in a period, measuring worst-case loss |
+| **MACD** | Moving Average Convergence Divergence, a momentum & trend direction indicator |
+| **P/E Ratio** | Price-to-Earnings. How many rands you pay per rand of annual earnings |
 | **12-1 Month Momentum** | 12-month price return excluding the last month (standard cross-sectional momentum signal) |
 
 ---
