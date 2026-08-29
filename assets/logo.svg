@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="JSE Analytics logo">
+  <defs>
+    <linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#22c55e"/><stop offset="0.55" stop-color="#4ade80"/><stop offset="1" stop-color="#facc15"/>
+    </linearGradient>
+    <linearGradient id="ar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22c55e" stop-opacity="0.30"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="62%">
+      <stop offset="0" stop-color="#4ade80" stop-opacity="0.18"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="200" height="200" rx="44" fill="#080d0a"/>
+  <circle cx="100" cy="92" r="80" fill="url(#glow)"/>
+
+  <!-- volume bars -->
+  <g fill="#22c55e" opacity="0.30">
+    <rect x="44"  y="132" width="15" height="24" rx="3"/>
+    <rect x="70"  y="122" width="15" height="34" rx="3"/>
+    <rect x="96"  y="128" width="15" height="28" rx="3"/>
+    <rect x="122" y="112" width="15" height="44" rx="3"/>
+    <rect x="148" y="118" width="15" height="38" rx="3"/>
+  </g>
+
+  <!-- price area + rising trend -->
+  <path d="M46 112 L72 96 L98 104 L124 72 L156 52 L156 118 L46 118 Z" fill="url(#ar)"/>
+  <path d="M46 112 L72 96 L98 104 L124 72 L156 52" fill="none" stroke="url(#g)"
+        stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- breakout marker -->
+  <circle cx="156" cy="52" r="11" fill="#080d0a" stroke="#facc15" stroke-width="6"/>
+</svg>

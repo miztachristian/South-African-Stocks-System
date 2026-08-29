@@ -1,10 +1,24 @@
+<div align="center">
+
+<img src="assets/logo.svg" alt="JSE Analytics" width="104" />
+
+<img src="assets/banner.svg" alt="JSE Stock Analysis & Backtesting System" width="100%" />
+
+<br/>
+
 # JSE Stock Analysis & Backtesting System
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
-![Exchange](https://img.shields.io/badge/Exchange-JSE-green)
-![Data](https://img.shields.io/badge/Data-Yahoo%20Finance%20%2B%20TradingView-orange)
-![Stocks](https://img.shields.io/badge/Stocks%20Covered-245%2B-purple)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.9%2B-22c55e?style=flat-square&logo=python&logoColor=white)
+![Exchange](https://img.shields.io/badge/Exchange-JSE-4ade80?style=flat-square)
+![Data](https://img.shields.io/badge/Data-Yahoo%20Finance%20%2B%20TradingView-facc15?style=flat-square)
+![Stocks](https://img.shields.io/badge/Stocks%20Covered-245%2B-fde047?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-a3e635?style=flat-square)
+
+[**Architecture**](#-system-architecture--data-flow) &middot; [Screens](#%EF%B8%8F-core-capabilities--investment-screens) &middot; [Structure](#-project-structure) &middot; [Quick-Start](#-setup--quick-start-guide) &middot; [Glossary](#-key-metrics-glossary)
+
+</div>
+
+---
 
 A production-grade, multi-dimensional quantitative investment and research platform tailored for the **Johannesburg Stock Exchange (JSE)**.
 
@@ -39,6 +53,13 @@ graph TD
     D2 -->|Momentum Top-10 vs BH Top-20| G1[Backtest League Tables & CSVs]
 
     F1 & F2 & F3 & F4 & G1 --> H1[Interactive Jupyter Notebooks]
+
+    classDef src fill:#0d1a12,stroke:#22c55e,color:#4ade80;
+    classDef eng fill:#1a1608,stroke:#facc15,color:#fde047;
+    classDef out fill:#101a0d,stroke:#4ade80,color:#86efac;
+    class A1,A2,A3,B1,B2,B3,C1 src;
+    class D1,D2,E1,E2,E3,E4 eng;
+    class F1,F2,F3,F4,G1,H1 out;
 ```
 
 ---
